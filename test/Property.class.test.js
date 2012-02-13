@@ -25,6 +25,9 @@ describe("Property", function () {
                 instance.setInitialValue(undefined);
             }).to.throwException();
             expect(function () {
+                instance.setInitialValue(true);
+            }).to.throwException();
+            expect(function () {
                 instance.setInitialValue(1);
             }).to.throwException();
             expect(function () {
@@ -44,35 +47,9 @@ describe("Property", function () {
             expect(instance.getInitialValue()).to.be(null);
         });
     });
-    describe("#setStatic", function () {
-        it("should return the instance", function () {
-            expect(instance.setStatic(true)).to.be(instance);
-        });
-        it("should throw an exception", function () {
-            expect(function () {
-                instance.setStatic(undefined);
-            }).to.throwException();
-            expect(function () {
-                instance.setStatic(null);
-            }).to.throwException();
-            expect(function () {
-                instance.setStatic(1);
-            }).to.throwException();
-            expect(function () {
-                instance.setStatic("Jude");
-            }).to.throwException();
-            expect(function () {
-                instance.setStatic({});
-            }).to.throwException();
-        });
-    });
-    describe("#isStatic", function () {
+    describe("#isAbstract", function () {
         it("should return true", function () {
-            instance.setStatic(true);
-            expect(instance.isStatic()).to.be(true);
-        });
-        it("should return false", function () {
-            expect(instance.isStatic()).to.be(false);
+            expect(instance.isAbstract()).to.be(false);
         });
     });
 });

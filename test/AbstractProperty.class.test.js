@@ -18,6 +18,21 @@ describe("AbstractProperty", function () {
     describe("#setName", function () {
         it("should return the instance", function () {
             expect(instance.setName("Batti")).to.be(instance);
+            expect(instance.setName(null)).to.be(instance);
+        });
+        it("should throw an exception", function () {
+            expect(function () {
+                instance.setName(undefined);
+            }).to.throwException();
+            expect(function () {
+                instance.setType(true);
+            }).to.throwException();
+            expect(function () {
+                instance.setType(2);
+            }).to.throwException();
+            expect(function () {
+                instance.setType({});
+            }).to.throwException();
         });
     });
     describe("#getName", function () {
@@ -36,8 +51,12 @@ describe("AbstractProperty", function () {
         it("should return the instance", function () {
             expect(instance.setType("js.String")).to.be(instance);
             expect(instance.setType(undefined)).to.be(instance);
+            expect(instance.setType(null)).to.be(instance);
         });
         it("should throw an exception", function () {
+            expect(function () {
+                instance.setType(true);
+            }).to.throwException();
             expect(function () {
                 instance.setType(1);
             }).to.throwException();
@@ -55,10 +74,14 @@ describe("AbstractProperty", function () {
             expect(instance.getType()).to.be("js.String");
         });
         it("should return undefined", function () {
+            instance.setType(undefined);
             expect(instance.getType()).to.be(undefined);
+        });
+        it("should return null", function () {
+            expect(instance.getType()).to.be(null);
             instance.setType("js.Boolean");
             instance.setType(null);
-            expect(instance.getType()).to.be(undefined);
+            expect(instance.getType()).to.be(null);
         });
     });
     describe("#setVisibility", function () {
@@ -71,6 +94,9 @@ describe("AbstractProperty", function () {
         it("should throw an exception", function () {
             expect(function () {
                 instance.setVisibility(undefined);
+            }).to.throwException();
+            expect(function () {
+                instance.setVisibility(true);
             }).to.throwException();
             expect(function () {
                 instance.setVisibility(1);
@@ -105,6 +131,9 @@ describe("AbstractProperty", function () {
                 instance.setComment(undefined);
             }).to.throwException();
             expect(function () {
+                instance.setComment(true);
+            }).to.throwException();
+            expect(function () {
                 instance.setComment(1);
             }).to.throwException();
             expect(function () {
@@ -129,6 +158,42 @@ describe("AbstractProperty", function () {
             var comment = new Comment();
             instance.setComment(comment);
             expect(instance.getComment()).to.be(comment);
+        });
+    });
+    describe("#setStatic", function () {
+        it("should return the instance", function () {
+            expect(instance.setStatic(true)).to.be(instance);
+        });
+        it("should throw an exception", function () {
+            expect(function () {
+                instance.setStatic(undefined);
+            }).to.throwException();
+            expect(function () {
+                instance.setStatic(null);
+            }).to.throwException();
+            expect(function () {
+                instance.setStatic(1);
+            }).to.throwException();
+            expect(function () {
+                instance.setStatic("Jude");
+            }).to.throwException();
+            expect(function () {
+                instance.setStatic({});
+            }).to.throwException();
+        });
+    });
+    describe("#getStatic", function () {
+        it("should return true", function () {
+            instance.setStatic(true);
+            expect(instance.getStatic()).to.be(true);
+        });
+        it("should return false", function () {
+            expect(instance.getStatic()).to.be(false);
+        });
+    });
+    describe("#isAbstract", function () {
+        it("should return true", function () {
+            expect(instance.isAbstract()).to.be(true);
         });
     });
 });

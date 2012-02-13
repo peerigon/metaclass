@@ -24,13 +24,13 @@ describe("Comment", function () {
                 instance.setDescription(undefined);
             }).to.throwException();
             expect(function () {
-                instance.setVisibility(1);
+                instance.setDescription(true);
             }).to.throwException();
             expect(function () {
-                instance.setVisibility({});
+                instance.setDescription(1);
             }).to.throwException();
             expect(function () {
-                instance.setVisibility([]);
+                instance.setDescription({});
             }).to.throwException();
         });
     });
@@ -60,6 +60,9 @@ describe("Comment", function () {
                 instance.setTag(undefined, "bla");
             }).to.throwException();
             expect(function () {
+                instance.setTag(true, "bla");
+            }).to.throwException();
+            expect(function () {
                 instance.setTag(1, "bla");
             }).to.throwException();
             expect(function () {
@@ -67,6 +70,9 @@ describe("Comment", function () {
             }).to.throwException();
             expect(function () {
                 instance.setTag("return", undefined);
+            }).to.throwException();
+            expect(function () {
+                instance.setTag("return", true);
             }).to.throwException();
             expect(function () {
                 instance.setTag("return", 1);
@@ -96,6 +102,23 @@ describe("Comment", function () {
             instance.setTag("param", null);
             expect(instance.getTag("param")).to.be(null);
         });
+        it("should throw an exception", function () {
+            expect(function () {
+                instance.getTag(undefined);
+            }).to.throwException();
+            expect(function () {
+                instance.getTag(null);
+            }).to.throwException();
+            expect(function () {
+                instance.getTag(true);
+            }).to.throwException();
+            expect(function () {
+                instance.setVisibility(2);
+            }).to.throwException();
+            expect(function () {
+                instance.setVisibility({});
+            }).to.throwException();
+        });
     });
     describe("#toString", function () {
         it("should return '@public\n'", function () {
@@ -118,13 +141,13 @@ describe("Comment", function () {
     describe("#charAt", function () {
         it("should return 'u'", function () {
             instance.setTag("public", "");
-            expect(instance.Super.charAt(1)).to.be("p"); // consider the '@'-sign before public
+            expect(instance.charAt(1)).to.be("p"); // consider the '@'-sign before public
         });
     });
     describe("#toUpperCase", function () {
         it("should return '@PUBLIC\n'", function () {
             instance.setTag("public", "");
-            expect(instance.Super.toUpperCase()).to.be("@PUBLIC\n");
+            expect(instance.toUpperCase()).to.be("@PUBLIC\n");
         });
     });
 });

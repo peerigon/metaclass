@@ -1,9 +1,9 @@
 {
-    "name": "meta.class",
+    "name": "metaclass",
     "description": "Provides some basic classes to describe the structure of a software project.",
     "version": "0.1.0",
-    "homepage": "http://github.com/pandaa/meta.class",
-    "repository": "git://github.com/pandaa/meta.class.git",
+    "homepage": "http://github.com/pandaa/metaclass",
+    "repository": "git://github.com/pandaa/metaclass.git",
     "author": "pandaa",
     "main": "./lib/index.js",
     "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract", "interface", "package", "meta"],

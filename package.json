@@ -2,11 +2,11 @@
     "name": "meta.class",
     "description": "Provides some basic classes to describe the structure of a software project.",
     "version": "0.1.0",
-    "homepage": "http://github.com/jhnns/meta.class",
-    "repository": "git://github.com/jhnns/meta.class.git",
-    "author": "Johannes Ewald <mail@johannesewald.de>",
+    "homepage": "http://github.com/pandaa/meta.class",
+    "repository": "git://github.com/pandaa/meta.class.git",
+    "author": "pandaa",
     "main": "./lib/index.js",
-    "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract"],
+    "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract", "interface", "package", "meta"],
     "dependencies": {},
     "engines": {
         "node": "0.6.x"

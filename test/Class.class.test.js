@@ -20,7 +20,7 @@ describe("Class", function () {
     });
     describe("#setClassId", function () {
         it("should return the instance", function () {
-            expect(instance.setClassId("lib.TestClass")).to.be(instance);
+            expect(instance.setClassId("lib.testClass")).to.be(instance);
             expect(instance.setClassId("lib.somePackage.otherPackage.TestClass")).to.be(instance);
             expect(instance.setClassId(null)).to.be(instance);
         });
@@ -29,16 +29,13 @@ describe("Class", function () {
                 instance.setClassId(undefined);
             }).to.throwException();
             expect(function () {
+                instance.setClassId(true);
+            }).to.throwException();
+            expect(function () {
                 instance.setClassId(2);
             }).to.throwException();
             expect(function () {
                 instance.setClassId({});
-            }).to.throwException();
-            expect(function () {
-                instance.setClassId("tooShort");
-            }).to.throwException();
-            expect(function () {
-                instance.setClassId("lib.lowerCaseClassName");
             }).to.throwException();
         });
     });
@@ -76,6 +73,41 @@ describe("Class", function () {
             expect(instance.getClassName()).to.be("TestClass");
             instance.setClassId("lib.somePackage.otherPackage.TestClass");
             expect(instance.getClassName()).to.be("TestClass");
+        });
+    });
+    describe("#setFsPath", function () {
+        it("should return the instance", function () {
+            expect(instance.setFsPath(null)).to.be(instance);
+            expect(instance.setFsPath(__filename)).to.be(instance);
+        });
+        it("should throw an exception", function () {
+            expect(function () {
+                instance.setClassId(undefined);
+            }).to.throwException();
+            expect(function () {
+                instance.setClassId(true);
+            }).to.throwException();
+            expect(function () {
+                instance.setClassId(2);
+            }).to.throwException();
+            expect(function () {
+                instance.setClassId([]);
+            }).to.throwException();
+            expect(function () {
+                instance.setClassId({});
+            }).to.throwException();
+        });
+    });
+    describe("#getFsPath", function () {
+        it("should return null", function () {
+            expect(instance.getFsPath()).to.be(null);
+            instance.setFsPath(__dirname);
+            instance.setFsPath(null);
+            expect(instance.getFsPath()).to.be(null);
+        });
+        it("should return __dirname", function () {
+            instance.setFsPath(__dirname);
+            expect(instance.getFsPath()).to.be(__dirname);
         });
     });
     describe("#setProperty", function () {
@@ -383,6 +415,9 @@ describe("Class", function () {
         it("should throw an exception", function () {
             expect(function () {
                 instance.getProperties(null);
+            }).to.throwException();
+            expect(function () {
+                instance.getProperties(true);
             }).to.throwException();
             expect(function () {
                 instance.getProperties(2);

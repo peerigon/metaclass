@@ -27,39 +27,39 @@ describe("Package", function () {
     it("should return true", function () {
         expect(instance.instanceOf(Package)).to.be(true);
     });
-    describe("#setFsPath", function () {
+    describe("#setPath", function () {
         it("should return the instance", function () {
-            expect(instance.setFsPath(null)).to.be(instance);
-            expect(instance.setFsPath(__filename)).to.be(instance);
+            expect(instance.setPath(null)).to.be(instance);
+            expect(instance.setPath(__filename)).to.be(instance);
         });
         it("should throw an exception", function () {
             expect(function () {
-                instance.setClassId(undefined);
+                instance.setPath(undefined);
             }).to.throwException();
             expect(function () {
-                instance.setClassId(true);
+                instance.setPath(true);
             }).to.throwException();
             expect(function () {
-                instance.setClassId(2);
+                instance.setPath(2);
             }).to.throwException();
             expect(function () {
-                instance.setClassId([]);
+                instance.setPath([]);
             }).to.throwException();
             expect(function () {
-                instance.setClassId({});
+                instance.setPath({});
             }).to.throwException();
         });
     });
-    describe("#getFsPath", function () {
+    describe("#getPath", function () {
         it("should return null", function () {
-            expect(instance.getFsPath()).to.be(null);
-            instance.setFsPath(__dirname);
-            instance.setFsPath(null);
-            expect(instance.getFsPath()).to.be(null);
+            expect(instance.getPath()).to.be(null);
+            instance.setPath(__dirname);
+            instance.setPath(null);
+            expect(instance.getPath()).to.be(null);
         });
         it("should return __dirname", function () {
-            instance.setFsPath(__dirname);
-            expect(instance.getFsPath()).to.be(__dirname);
+            instance.setPath(__dirname);
+            expect(instance.getPath()).to.be(__dirname);
         });
     });
     describe("#setName", function () {

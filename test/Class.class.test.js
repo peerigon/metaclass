@@ -1,6 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
+    is = require("../lib/helpers/is"),
     Class = require("../lib/Class.class"),
     AbstractProperty = require("../lib/AbstractProperty.class"),
     AbstractMethod = require("../lib/AbstractMethod.class"),
@@ -16,7 +17,7 @@ describe("Class", function () {
         instance = new Class();
     });
     it("should return true", function () {
-        expect(instance.instanceOf(Class)).to.be(true);
+        expect(is(instance).instanceOf(Class)).to.be(true);
     });
     describe("#setClassId", function () {
         it("should return the instance", function () {
@@ -75,39 +76,39 @@ describe("Class", function () {
             expect(instance.getClassName()).to.be("TestClass");
         });
     });
-    describe("#setFsPath", function () {
+    describe("#setPath", function () {
         it("should return the instance", function () {
-            expect(instance.setFsPath(null)).to.be(instance);
-            expect(instance.setFsPath(__filename)).to.be(instance);
+            expect(instance.setPath(null)).to.be(instance);
+            expect(instance.setPath(__filename)).to.be(instance);
         });
         it("should throw an exception", function () {
             expect(function () {
-                instance.setClassId(undefined);
+                instance.setPath(undefined);
             }).to.throwException();
             expect(function () {
-                instance.setClassId(true);
+                instance.setPath(true);
             }).to.throwException();
             expect(function () {
-                instance.setClassId(2);
+                instance.setPath(2);
             }).to.throwException();
             expect(function () {
-                instance.setClassId([]);
+                instance.setPath([]);
             }).to.throwException();
             expect(function () {
-                instance.setClassId({});
+                instance.setPath({});
             }).to.throwException();
         });
     });
-    describe("#getFsPath", function () {
+    describe("#getPath", function () {
         it("should return null", function () {
-            expect(instance.getFsPath()).to.be(null);
-            instance.setFsPath(__dirname);
-            instance.setFsPath(null);
-            expect(instance.getFsPath()).to.be(null);
+            expect(instance.getPath()).to.be(null);
+            instance.setPath(__dirname);
+            instance.setPath(null);
+            expect(instance.getPath()).to.be(null);
         });
         it("should return __dirname", function () {
-            instance.setFsPath(__dirname);
-            expect(instance.getFsPath()).to.be(__dirname);
+            instance.setPath(__dirname);
+            expect(instance.getPath()).to.be(__dirname);
         });
     });
     describe("#setProperty", function () {
@@ -462,7 +463,6 @@ describe("Class", function () {
             var result;
 
             function check() {
-                result = result.getProperties();
                 expect(result).to.be.an(Array);
                 expect(result).to.have.length(0);
             }
@@ -555,7 +555,7 @@ describe("Class", function () {
             var result;
 
             function check() {
-                expect(result.getProperties()).to.be.eql([prop2]);
+                expect(result).to.be.eql([prop2]);
             }
 
             function setProps() {

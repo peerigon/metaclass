@@ -1,66 +1,95 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    Interface = require("../lib/Interface.class"),
-    AbstractMethod = require("../lib/AbstractMethod.class"),
-    AbstractProperty = require("../lib/AbstractProperty.class"),
-    Method = require("../lib/Method.class"),
-    Visibility = require("../lib/Visibility.class");
+    Interface,
+    modulePath = "../lib/Interface.class.js",
+    sinon = require("sinon"),
+    injectr = require("injectr");
+
+function typeError(err) {
+    expect(err.constructor).to.be(TypeError);
+}
 
 describe("Interface", function () {
+    describe("#instanceOf", function () {
+        var instance;
 
-    var instance,
-        instanceMethod,
-        staticMethod,
-        property;
-
-    beforeEach(function () {
-        instance = new Interface();
-        instanceMethod = new AbstractMethod();
-        instanceMethod.setStatic(false);
-        staticMethod = new AbstractMethod();
-        staticMethod.setStatic(true);
-        property = new AbstractProperty();
-    });
-    it("should return true", function () {
-        expect(instance.instanceOf(Interface)).to.be(true);
+        it("should return true", function () {
+            Interface = require(modulePath);
+            instance = new Interface();
+            expect(instance.instanceOf(Interface)).to.be(true);
+        });
     });
     describe("#setMethod", function () {
+        var PropertyCollectionStub,
+            stub;
+
+        before(function () {
+            PropertyCollectionStub = function () {};
+            stub = sinon.stub();
+            PropertyCollectionStub.prototype.setProperty = stub;
+        });
         it("should return the instance", function () {
-            instanceMethod.setName("someMethod");
-            expect(instance.setMethod(instanceMethod)).to.be(instance);
-            staticMethod.setName("someMethod"); // method with the same name
-            expect(instance.setMethod(staticMethod)).to.be(instance);
+            var method = {},
+                instance;
+
+            stub = sinon.stub();
+            stub.returns(true);
+            method.instanceOf = stub;
+            Interface = injectr(modulePath, {
+                "./PropertyCollection.class": PropertyCollectionStub,
+                "./AbstractMethod"
+            });
+            instance = new Interface();
+            expect(
+                instance.setMethod(method)).to.be(instance
+            );
+            expect(
+                method.instanceOf.calledOnce
+            ).to.be(true);
+            expect(
+                PropertyCollectionStub.prototype.setProperty.calledWithExactly(method)
+            ).to.be(true);
         });
         it("should throw an exception", function () {
+            var Instance = require(modulePath),
+                instance = new Instance();
+
             expect(function () {
                 instance.setMethod(undefined);
-            }).to.throwException();
+            }).to.throwException(typeError);
             expect(function () {
                 instance.setMethod(null);
-            }).to.throwException();
+            }).to.throwException(typeError);
             expect(function () {
                 instance.setMethod(true);
-            }).to.throwException();
+            }).to.throwException(typeError);
             expect(function () {
                 instance.setMethod(1);
-            }).to.throwException();
+            }).to.throwException(typeError);
             expect(function () {
                 instance.setMethod("some string");
-            }).to.throwException();
+            }).to.throwException(typeError);
             expect(function () {
                 instance.setMethod({});
-            }).to.throwException();
+            }).to.throwException(typeError);
             expect(function () {
-                instance.setMethod(instanceMethod); // method without name
-            }).to.throwException();
-            expect(function () {
-                property.setName("bla");
-                instance.setMethod(property);
-            }).to.throwException();
+                var property = {};
+
+                stub = sinon.stub();
+                stub.returns(false);
+                property.instanceOf = stub;
+                instance.setMethod(property); // property instead of method
+            }).to.throwException(typeError);
         });
     });
     describe("#getMethod", function () {
+        var instance,
+            Instance = require(modulePath);
+
+        beforeEach(function () {
+            instance = new Instance();
+        });
         it("should return null", function () {
             expect(instance.getMethod("someMethod")).to.be(null);
             expect(instance.getMethod("someMethod", true)).to.be(null);

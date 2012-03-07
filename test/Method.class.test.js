@@ -1,6 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
+    is = require("../lib/helpers/is"),
     Method = require("../lib/Method.class"),
     AbstractMethod = require("../lib/AbstractMethod.class"),
     AbstractProperty = require("../lib/AbstractProperty.class");
@@ -13,9 +14,9 @@ describe("Method", function () {
         instance = new Method();
     });
     it("should return true", function () {
-        expect(instance.instanceOf(Method)).to.be(true);
-        expect(instance.instanceOf(AbstractMethod)).to.be(true);
-        expect(instance.instanceOf(AbstractProperty)).to.be(true);
+        expect(is(instance).instanceOf(Method)).to.be(true);
+        expect(is(instance).instanceOf(AbstractMethod)).to.be(true);
+        expect(is(instance).instanceOf(AbstractProperty)).to.be(true);
     });
     describe("#setCode", function () {
         it("should return the instance", function () {

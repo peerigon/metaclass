@@ -1,94 +1,103 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    Interface,
-    modulePath = "../lib/Interface.class.js",
-    sinon = require("sinon"),
-    injectr = require("injectr");
-
-function typeError(err) {
-    expect(err.constructor).to.be(TypeError);
-}
+    is = require("../lib/helpers/is"),
+    AbstractMethod = require("../lib/AbstractMethod.class.js"),
+    AbstractProperty = require("../lib/AbstractProperty.class.js"),
+    Method = require("../lib/Method.class.js"),
+    Property = require("../lib/Property.class.js"),
+    Interface = require("../lib/Interface.class.js"),
+    combineStrings = require("./testHelpers/combineStrings.js"),
+    createProperties = require("./testHelpers/createProperties.js"),
+    sortByPropertyName = require("./testHelpers/sortByPropertyName.js"),
+    checkError = require("./testHelpers/checkError.js");
 
 describe("Interface", function () {
-    describe("#instanceOf", function () {
-        var instance;
+    var instance,
+        possibleModes = [
+            ["static", "instance"],
+            ["abstract"],
+            ["method"],
+            ["public", "protected", "private"]
+        ],
+        allPossibleAbstractMethods = combineStrings(possibleModes);
 
-        it("should return true", function () {
-            Interface = require(modulePath);
-            instance = new Interface();
-            expect(instance.instanceOf(Interface)).to.be(true);
-        });
+    allPossibleAbstractMethods = createProperties(allPossibleAbstractMethods);
+    allPossibleAbstractMethods.sort(sortByPropertyName);
+    beforeEach(function () {
+        instance = new Interface();
+    });
+    it("should return true", function () {
+        expect(is(instance).instanceOf(Interface)).to.be(true);
     });
     describe("#setMethod", function () {
-        var PropertyCollectionStub,
-            stub;
-
-        before(function () {
-            PropertyCollectionStub = function () {};
-            stub = sinon.stub();
-            PropertyCollectionStub.prototype.setProperty = stub;
-        });
         it("should return the instance", function () {
-            var method = {},
-                instance;
+            var instanceMethod = new AbstractMethod(),
+                staticMethod = new AbstractMethod();
 
-            stub = sinon.stub();
-            stub.returns(true);
-            method.instanceOf = stub;
-            Interface = injectr(modulePath, {
-                "./PropertyCollection.class": PropertyCollectionStub,
-                "./AbstractMethod"
-            });
-            instance = new Interface();
-            expect(
-                instance.setMethod(method)).to.be(instance
-            );
-            expect(
-                method.instanceOf.calledOnce
-            ).to.be(true);
-            expect(
-                PropertyCollectionStub.prototype.setProperty.calledWithExactly(method)
-            ).to.be(true);
+            instanceMethod
+                .setName("someMethod")
+                .setStatic(false);
+            staticMethod
+                .setName("someMethod")     // method with the same name. Should throw no error,
+                .setStatic(true);
+            expect(instance.setMethod(instanceMethod)).to.be(instance);
+            expect(instance.setMethod(staticMethod)).to.be(instance);
         });
         it("should throw an exception", function () {
-            var Instance = require(modulePath),
-                instance = new Instance();
-
             expect(function () {
                 instance.setMethod(undefined);
-            }).to.throwException(typeError);
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.setMethod(null);
-            }).to.throwException(typeError);
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.setMethod(true);
-            }).to.throwException(typeError);
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.setMethod(1);
-            }).to.throwException(typeError);
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.setMethod("some string");
-            }).to.throwException(typeError);
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.setMethod({});
-            }).to.throwException(typeError);
+            }).to.throwException(checkError(TypeError));
             expect(function () {
-                var property = {};
+                var property = new AbstractProperty();
 
-                stub = sinon.stub();
-                stub.returns(false);
-                property.instanceOf = stub;
-                instance.setMethod(property); // property instead of method
-            }).to.throwException(typeError);
+                property.setName("myProperty");
+                instance.setMethod(property); // no properties
+            }).to.throwException(checkError(TypeError));
+            expect(function () {
+                var property = new Property();
+
+                property.setName("myProperty");
+                instance.setMethod(property); // no properties
+            }).to.throwException(checkError(TypeError));
+            expect(function () {
+                var method = new Method();
+
+                method.setName("myProperty");
+                instance.setMethod(method); // no methods with implementation code
+            }).to.throwException(checkError(TypeError));
+            expect(function () {
+                var method = new AbstractMethod();
+
+                instance.setMethod(method); // method without a name
+            }).to.throwException(checkError(Error));
         });
     });
     describe("#getMethod", function () {
-        var instance,
-            Instance = require(modulePath);
+        var instanceMethod,
+            staticMethod;
 
         beforeEach(function () {
-            instance = new Instance();
+            instance = new Interface();
+            instanceMethod = new AbstractMethod();
+            instanceMethod.setStatic(false);
+            staticMethod = new AbstractMethod();
+            staticMethod.setStatic(true);
         });
         it("should return null", function () {
             expect(instance.getMethod("someMethod")).to.be(null);
@@ -106,6 +115,17 @@ describe("Interface", function () {
         });
     });
     describe("#removeMethod", function () {
+        var instanceMethod,
+            staticMethod;
+
+        beforeEach(function () {
+            instance = new Interface();
+            instanceMethod = new AbstractMethod();
+            instanceMethod.setStatic(false);
+            staticMethod = new AbstractMethod();
+            staticMethod.setStatic(true);
+        });
+
         it("should return undefined", function () {
             expect(instance.removeMethod("someMethod")).to.be(undefined);
             instanceMethod.setName("someMethod");
@@ -131,141 +151,38 @@ describe("Interface", function () {
         it("should throw an exception", function () {
             expect(function () {
                 instance.removeMethod(undefined);
-            }).to.throwException();
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.removeMethod(null);
-            }).to.throwException();
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.removeMethod(true);
-            }).to.throwException();
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.removeMethod(2);
-            }).to.throwException();
+            }).to.throwException(checkError(TypeError));
             expect(function () {
                 instance.removeMethod({});
-            }).to.throwException();
+            }).to.throwException(checkError(TypeError));
         });
     });
-    describe("#getProperties", function () {
-        var possibleModes = [
-                ["static", "instance"],
-                ["abstract", "implemented"],
-                ["public", "protected", "private"]
-            ],
-            method,
-            i,
-            combinations = [],
-            properties = [];
-
-        // creates every possible combination of static/instance, abstract/implemented, attribute/method, public/protected/private
-        function combine(currentModeCategory, result) {
-            var i,
-                tempResult,
-                modes = possibleModes[currentModeCategory];
-
-            for (i = 0; i < modes.length; i++) {
-                result = result || "";
-                tempResult = result + modes[i];
-                if (currentModeCategory === possibleModes.length - 1) {
-                    combinations.push(tempResult);
-                } else {
-                    combine(currentModeCategory + 1, tempResult + " ");
-                }
-            }
-        }
-
-        function createProperty(propName) {
-            var method;
-
-            if (propName.match("abstract")) {   // IF TRUE: It's abstract
-                method = new AbstractMethod();
-            } else { // IF TRUE: It's implemented
-                method = new Method();
-            }
-
-            method.setName(propName);
-
-            if (propName.match("static")) { // IF TRUE: It's static
-                method.setStatic(true);
-            } else { // IF TRUE: It's an instance property
-                method.setStatic(false);
-            }
-
-            if (propName.match("public")) { // IF TRUE: It's public
-                method.setVisibility(Visibility.PUBLIC);
-            } else if (propName.match("protected")) { // IF TRUE: It's protected
-                method.setVisibility(Visibility.PROTECTED);
-            } else { // IF TRUE: It's private
-                method.setVisibility(Visibility.PRIVATE);
-            }
-
-            return method;
-        }
-
-        function setUp() {
-            var i,
-                prop,
-                propName;
-
-            for (i = 0; i < combinations.length; i++) {
-                propName = combinations[i];
-                prop = createProperty(propName);
-                properties[i] = prop;
-                instance.setMethod(prop);
-            }
-        }
-
-        combine(0);
-
-        it("should return all properties", function () {
-            var selection,
-                propertyTypes = [],
-                i;
-
-            setUp();
-            selection = instance.getMethods();
-            for (i = 0; i < selection.length; i++) {
-                propertyTypes.push(selection[i].getName());
-            }
-            for (i = 0; i < properties.length; i++) {
-                expect(propertyTypes).to.contain(properties[i].getName());
-            }
+    describe("#getMethods", function () {
+        it("should return an empty array on a new interface", function () {
+            expect(instance.getMethods()).to.eql([]);
         });
-        it("should return the desired selection of properties", function () {
+        it("should return all previously added methods", function () {
             var i,
-                selection,
-                currentCombination;
+                result,
+                currentProperty;
 
-            setUp();
-            for (i = 0; i < combinations.length; i++) {
-                currentCombination = combinations[i];
-                selection = instance.getMethods({
-                    Static: !!currentCombination.match("static"),
-                    Instance: !!currentCombination.match("instance"),
-                    Abstract: !!currentCombination.match("abstract"),
-                    Implemented: !!currentCombination.match("implemented"),
-                    Private: !!currentCombination.match("private"),
-                    Protected: !!currentCombination.match("protected"),
-                    Public: !!currentCombination.match("public")
-                });
-                expect(selection).to.eql([
-                    properties[i]
-                ]);
+            for (i = 0; i < allPossibleAbstractMethods.length; i++) {
+                currentProperty = allPossibleAbstractMethods[i];
+                instance.setMethod(currentProperty);
             }
-        });
-        it("should throw an exception", function () {
-            expect(function () {
-                instance.getMethods(null);
-            }).to.throwException();
-            expect(function () {
-                instance.getMethods(2);
-            }).to.throwException();
-            expect(function () {
-                instance.getMethods("someString");
-            }).to.throwException();
-            expect(function () {
-                instance.getMethods([]);
-            }).to.throwException();
+
+            result = instance.getMethods();
+            result.sort(sortByPropertyName);
+            expect(result).to.eql(allPossibleAbstractMethods);
         });
     });
 });

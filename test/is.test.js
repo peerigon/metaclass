@@ -7,32 +7,27 @@ var expect = require("expect.js"),
 
 describe("is", function () {
     describe("#instanceOf", function () {
-        function A() {
-        }
+        function A() {}
 
-        function B() {
-        }
+        function B() {}
 
-        function C() {
-        }
-
+        function C() {}
         C.prototype = A.prototype;
 
-        function D() {
-        }
+        function D() {}
         D.Extends = A;
 
-        // Inconsitent inheritance. Extends should take precedence over prototype.
-        function E() {
-        }
+        // Inconsitent inheritance. Prototype should take precedence over Extends.
+        // Actually it's not possible the other way round, because checking for
+        // e.constructor to get the Extends-prototype does not return E. Instead
+        // of it returns the prototype of E, which is the prototype of B.
+        function E() {}
         E.Extends = A;
-
-        E.prototype = B;
+        E.prototype = B.prototype;
 
         // Inherting a native function
-        function MyNativeExtension() {
-            this.Extends = nativeFunctions[0];
-        }
+        function MyNativeExtension() {}
+        MyNativeExtension.Extends = nativeFunctions[0];
 
         it("should work with native values", function () {
             var nativesValues = [true, 2, "Hello", [1, 2, 3], {one: "one", two: "two"},
@@ -56,20 +51,20 @@ describe("is", function () {
             expect(dIs.instanceOf(A)).to.be(true);
             expect(dIs.instanceOf(D)).to.be(true);
         });
-        it("Extends should take precedence over prototype in a conflicting inheritance case", function () {
+        it("Prototype-inheritance should take precedence over Extends-property in a conflicting inheritance case", function () {
             var e = new E(),
                 eIs = is(e);
 
-            expect(eIs.instanceOf(A)).to.be(true);
+            expect(eIs.instanceOf(B)).to.be(true);
             expect(eIs.instanceOf(E)).to.be(true);
-            expect(eIs.instanceOf(B)).to.be(false);
+            expect(eIs.instanceOf(A)).to.be(false);
         });
         it("should return true when inheriting native functions", function () {
             var myNativeExtension = new MyNativeExtension(),
                 myNativeExtensionIs = is(myNativeExtension);
 
             nativeFunctions.forEach(function (NativeFunction) {
-                myNativeExtension.Extends = NativeFunction;
+                MyNativeExtension.Extends = NativeFunction;
                 expect(myNativeExtensionIs.instanceOf(NativeFunction)).to.be(true);
             });
             expect(myNativeExtensionIs.instanceOf(MyNativeExtension)).to.be(true);
@@ -120,27 +115,23 @@ describe("is", function () {
     // Thank God we only have to negate the test, too.
     describe("#notInstanceOf", function () {
 
-        function A() {
-        }
+        function A() {}
 
-        function B() {
-        }
+        function B() {}
 
-        function C() {
-        }
-
+        function C() {}
         C.prototype = A.prototype;
 
-        function D() {
-            this.Extends = A;
-        }
+        function D() {}
+        D.Extends = A;
 
-        // Inconsitent inheritance. Extends should take precedence over prototype.
-        function E() {
-            this.Extends = A;
-        }
-
-        E.prototype = B;
+        // Inconsitent inheritance. Prototype should take precedence over Extends.
+        // Actually it's not possible the other way round, because checking for
+        // e.constructor to get the Extends-prototype does not return E. Instead
+        // of it returns the prototype of E, which is the prototype of B.
+        function E() {}
+        E.Extends = A;
+        E.prototype = B.prototype;
 
         it("should return true when the prototypes are not inherting", function () {
             var c = new C(),
@@ -153,12 +144,6 @@ describe("is", function () {
                 dIs = is(d);
 
             expect(dIs.notInstanceOf(B)).to.be(true);
-        });
-        it("Extends should take precedence over prototype in a conflicting inheritance case", function () {
-            var e = new E(),
-                eIs = is(e);
-
-            expect(eIs.notInstanceOf(B)).to.be(true);
         });
         it("should return true when you check an undefined or null value", function () {
             expect(is(null).notInstanceOf(B)).to.be(true);
@@ -186,11 +171,12 @@ describe("is", function () {
 
             expect(dIs.notInstanceOf(A)).to.be(false);
         });
-        it("should return false even when the inheritance is conflicting. Extends should take precedence over prototype in this case", function () {
+        it("Prototype-inheritance should take precedence over Extends-property in a conflicting inheritance case", function () {
             var e = new E(),
                 eIs = is(e);
 
-            expect(eIs.notInstanceOf(A)).to.be(false);
+            expect(eIs.notInstanceOf(B)).to.be(false);
+            expect(eIs.notInstanceOf(A)).to.be(true);
         });
         it("should throw an exception when passing a non-function", function () {
             var somethingIs = is("this value doesn't matter");

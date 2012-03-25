@@ -1,6 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
+    is = require("../lib/helpers/is"),
     Property = require("../lib/Property.class"),
     AbstractProperty = require("../lib/AbstractProperty.class");
 
@@ -12,8 +13,8 @@ describe("Property", function () {
         instance = new Property();
     });
     it("should return true", function () {
-        expect(instance.instanceOf(Property)).to.be(true);
-        expect(instance.instanceOf(AbstractProperty)).to.be(true);
+        expect(is(instance).instanceOf(Property)).to.be(true);
+        expect(is(instance).instanceOf(AbstractProperty)).to.be(true);
     });
     describe("#setInitialValue", function () {
         it("should return the instance", function () {

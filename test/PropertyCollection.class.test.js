@@ -1,22 +1,26 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
+    is = require("../lib/helpers/is"),
     PropertyCollection = require("../lib/PropertyCollection.class"),
     AbstractProperty = require("../lib/AbstractProperty.class"),
-    AbstractMethod = require("../lib/AbstractMethod.class"),
     Property = require("../lib/Property.class"),
     Method = require("../lib/Method.class"),
-    Visibility = require("../lib/Visibility.class");
+    getAllPossiblePropertyDescriptions = require("testHelpers/combineStrings.js"),
+    createProperties = require("./testHelpers/createProperties.js"),
+    sortByPropertyName = require("./testHelpers/sortByPropertyName.js");
 
 describe("PropertyCollection", function () {
+    var instance,
+        propertyDescriptions = getAllPossiblePropertyDescriptions(),
+        allPossibleProperties = createProperties(propertyDescriptions);
 
-    var instance;
-
+    allPossibleProperties.sort(sortByPropertyName);
     beforeEach(function () {
         instance = new PropertyCollection();
     });
     it("should return true", function () {
-        expect(instance.instanceOf(PropertyCollection)).to.be(true);
+        expect(is(instance).instanceOf(PropertyCollection)).to.be(true);
     });
     describe("#setProperty", function () {
         it("should return the instance", function () {
@@ -133,136 +137,22 @@ describe("PropertyCollection", function () {
         });
     });
     describe("#getProperties", function () {
-        var possibleModes = [
-                ["static", "instance"],
-                ["abstract", "implemented"],
-                ["attribute", "method"],
-                ["public", "protected", "private"]
-            ],
-            prop,
-            i,
-            combinations = [],
-            properties = [];
-
-        // creates every possible combination of static/instance, abstract/implemented, attribute/method, public/protected/private
-        function combine(currentModeCategory, result) {
-            var i,
-                tempResult,
-                modes = possibleModes[currentModeCategory];
-
-            for (i = 0; i < modes.length; i++) {
-                result = result || "";
-                tempResult = result + modes[i];
-                if (currentModeCategory === possibleModes.length - 1) {
-                    combinations.push(tempResult);
-                } else {
-                    combine(currentModeCategory + 1, tempResult + " ");
-                }
-            }
-        }
-
-        function createProperty(propName) {
-            var prop;
-
-            if (propName.match("abstract")) {   // IF TRUE: It's abstract
-                if (propName.match("attribute")) {  // IF TRUE: It's an abstract attribuite
-                    prop = new AbstractProperty();
-                } else { // IF TRUE: It's an abstract method
-                    prop = new AbstractMethod();
-                }
-            } else { // IF TRUE: It's implemented
-                if (propName.match("attribute")) { // IF TRUE: It's an implemented attribute
-                    prop = new Property();
-                } else { // IF TRUE: It's an implemented method
-                    prop = new Method();
-                }
-            }
-
-            prop.setName(propName);
-
-            if (propName.match("static")) { // IF TRUE: It's static
-                prop.setStatic(true);
-            } else { // IF TRUE: It's an instance property
-                prop.setStatic(false);
-            }
-
-            if (propName.match("public")) { // IF TRUE: It's public
-                prop.setVisibility(Visibility.PUBLIC);
-            } else if (propName.match("protected")) { // IF TRUE: It's protected
-                prop.setVisibility(Visibility.PROTECTED);
-            } else { // IF TRUE: It's private
-                prop.setVisibility(Visibility.PRIVATE);
-            }
-
-            return prop;
-        }
-
-        function setUp() {
-            var i,
-                prop,
-                propName;
-
-            for (i = 0; i < combinations.length; i++) {
-                propName = combinations[i];
-                prop = createProperty(propName);
-                properties[i] = prop;
-                instance.setProperty(prop);
-            }
-        }
-
-        combine(0);
-
-        it("should return all properties", function () {
-            var selection,
-                propertyTypes = [],
-                i;
-
-            setUp();
-            selection = instance.getProperties();
-            for (i = 0; i < selection.length; i++) {
-                propertyTypes.push(selection[i].getName());
-            }
-            for (i = 0; i < properties.length; i++) {
-                expect(propertyTypes).to.contain(properties[i].getName());
-            }
+        it("should return an empty array on a new property collection", function () {
+            expect(instance.getProperties()).to.eql([]);
         });
-        it("should return the desired selection of properties", function () {
+        it("should return all previously added properties", function () {
             var i,
-                selection,
-                currentCombination;
+                result,
+                currentProperty;
 
-            setUp();
-            for (i = 0; i < combinations.length; i++) {
-                currentCombination = combinations[i];
-                selection = instance.getProperties({
-                    Static: !!currentCombination.match("static"),
-                    Instance: !!currentCombination.match("instance"),
-                    Abstract: !!currentCombination.match("abstract"),
-                    Implemented: !!currentCombination.match("implemented"),
-                    Attribute: !!currentCombination.match("attribute"),
-                    Method: !!currentCombination.match("method"),
-                    Private: !!currentCombination.match("private"),
-                    Protected: !!currentCombination.match("protected"),
-                    Public: !!currentCombination.match("public")
-                });
-                expect(selection).to.eql(
-                    [properties[i]]
-                );
+            for (i = 0; i < allPossibleProperties.length; i++) {
+                currentProperty = allPossibleProperties[i];
+                instance.setProperty(currentProperty);
             }
-        });
-        it("should throw an exception", function () {
-            expect(function () {
-                instance.getProperties(null);
-            }).to.throwException();
-            expect(function () {
-                instance.getProperties(2);
-            }).to.throwException();
-            expect(function () {
-                instance.getProperties("someString");
-            }).to.throwException();
-            expect(function () {
-                instance.getProperties([]);
-            }).to.throwException();
+
+            result = instance.getProperties();
+            result.sort(sortByPropertyName);
+            expect(result).to.eql(allPossibleProperties);
         });
     });
 });

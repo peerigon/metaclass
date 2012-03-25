@@ -11,7 +11,7 @@ describe("AbstractProperty", function () {
     var instance;
 
     beforeEach(function () {
-        instance = new AbstractProperty(Visibility, Comment);
+        instance = new AbstractProperty();
     });
     it("should return true", function () {
         expect(is(instance).instanceOf(AbstractProperty)).to.be(true);

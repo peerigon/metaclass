@@ -1,6 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
+    is = require("../lib/helpers/is"),
     Package= require("../lib/Package.class"),
     Class = require("../lib/Class.class");
 
@@ -25,7 +26,7 @@ describe("Package", function () {
         instance = new Package();
     });
     it("should return true", function () {
-        expect(instance.instanceOf(Package)).to.be(true);
+        expect(is(instance).instanceOf(Package)).to.be(true);
     });
     describe("#setPath", function () {
         it("should return the instance", function () {

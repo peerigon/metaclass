@@ -1,6 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
+    is = require("../lib/helpers/is"),
     Comment = require("../lib/Comment.class");
 
 describe("Comment", function () {
@@ -11,8 +12,8 @@ describe("Comment", function () {
         instance = new Comment();
     });
     it("should return true", function () {
-        expect(instance.instanceOf(Comment)).to.be(true);
-        expect(instance.instanceOf(String)).to.be(true);
+        expect(is(instance).instanceOf(Comment)).to.be(true);
+        expect(is(instance).instanceOf(String)).to.be(true);
     });
     describe("#setDescription", function () {
         it("should return the instance", function () {
@@ -139,7 +140,7 @@ describe("Comment", function () {
         });
     });
     describe("#charAt", function () {
-        it("should return 'u'", function () {
+        it("should return 'p'", function () {
             instance.setTag("public", "");
             expect(instance.charAt(1)).to.be("p"); // consider the '@'-sign before public
         });

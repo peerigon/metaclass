@@ -6,13 +6,19 @@ var expect = require("expect.js"),
     AbstractProperty = require("../lib/AbstractProperty.class"),
     Property = require("../lib/Property.class"),
     Method = require("../lib/Method.class"),
-    getAllPossiblePropertyDescriptions = require("testHelpers/combineStrings.js"),
+    combineStrings = require("./testHelpers/combineStrings.js"),
     createProperties = require("./testHelpers/createProperties.js"),
     sortByPropertyName = require("./testHelpers/sortByPropertyName.js");
 
 describe("PropertyCollection", function () {
     var instance,
-        propertyDescriptions = getAllPossiblePropertyDescriptions(),
+        possibleModes = [
+            ["static", "instance"],
+            ["abstract", "implemented"],
+            ["attribute", "method"],
+            ["public", "protected", "private"]
+        ],
+        propertyDescriptions = combineStrings(possibleModes),
         allPossibleProperties = createProperties(propertyDescriptions);
 
     allPossibleProperties.sort(sortByPropertyName);
@@ -22,7 +28,7 @@ describe("PropertyCollection", function () {
     it("should return true", function () {
         expect(is(instance).instanceOf(PropertyCollection)).to.be(true);
     });
-    describe("#setProperty", function () {
+    describe("#addProperty", function () {
         it("should return the instance", function () {
             var instanceProp = new Property(),
                 staticProp = new Property();
@@ -33,30 +39,30 @@ describe("PropertyCollection", function () {
             staticProp
                 .setName("someProperty")     // property with the same name. Should throw no error,
                 .setStatic(true);
-            expect(instance.setProperty(instanceProp)).to.be(instance);
-            expect(instance.setProperty(staticProp)).to.be(instance);
+            expect(instance.addProperty(instanceProp)).to.be(instance);
+            expect(instance.addProperty(staticProp)).to.be(instance);
         });
         it("should throw an exception", function () {
             expect(function () {
-                instance.setProperty(undefined);
+                instance.addProperty(undefined);
             }).to.throwException();
             expect(function () {
-                instance.setProperty(null);
+                instance.addProperty(null);
             }).to.throwException();
             expect(function () {
-                instance.setProperty(true);
+                instance.addProperty(true);
             }).to.throwException();
             expect(function () {
-                instance.setProperty(1);
+                instance.addProperty(1);
             }).to.throwException();
             expect(function () {
-                instance.setProperty("some string");
+                instance.addProperty("some string");
             }).to.throwException();
             expect(function () {
-                instance.setProperty({});
+                instance.addProperty({});
             }).to.throwException();
             expect(function () {
-                instance.setProperty(new AbstractProperty()); // property without name
+                instance.addProperty(new AbstractProperty()); // property without name
             }).to.throwException();
         });
     });
@@ -76,8 +82,8 @@ describe("PropertyCollection", function () {
             staticMethod
                 .setName("someMethod")
                 .setStatic(true);
-            instance.setProperty(instanceMethod);
-            instance.setProperty(staticMethod);
+            instance.addProperty(instanceMethod);
+            instance.addProperty(staticMethod);
             expect(instance.getProperty("someMethod")).to.be(instanceMethod);
             expect(instance.getProperty("someMethod", false)).to.be(instanceMethod);
             expect(instance.getProperty("someMethod", true)).to.be(staticMethod);
@@ -89,7 +95,7 @@ describe("PropertyCollection", function () {
 
             prop.setName("someProperty");
             expect(instance.removeProperty("someProperty")).to.be(undefined);
-            instance.setProperty(prop);
+            instance.addProperty(prop);
             expect(instance.removeProperty("someProperty")).to.be(undefined);
         });
         it("should actually remove the method", function () {
@@ -103,8 +109,8 @@ describe("PropertyCollection", function () {
                 .setName("someProperty")
                 .setStatic(true);
             instance
-                .setProperty(instanceProp)
-                .setProperty(staticProp)
+                .addProperty(instanceProp)
+                .addProperty(staticProp)
                 .removeProperty(instanceProp);
             expect(instance.getProperty("someProperty", false)).to.be(null);
             expect(instance.getProperty("someProperty", true)).to.be(staticProp);
@@ -112,8 +118,8 @@ describe("PropertyCollection", function () {
             expect(instance.getProperty("someProperty", true)).to.be(null);
             expect(instance.getProperty("someProperty", false)).to.be(null);
             instance
-                .setProperty(instanceProp)
-                .setProperty(staticProp)
+                .addProperty(instanceProp)
+                .addProperty(staticProp)
                 .removeProperty("someProperty");
             expect(instance.getProperty("someProperty", true)).to.be(null);
             expect(instance.getProperty("someProperty", false)).to.be(null);
@@ -147,7 +153,7 @@ describe("PropertyCollection", function () {
 
             for (i = 0; i < allPossibleProperties.length; i++) {
                 currentProperty = allPossibleProperties[i];
-                instance.setProperty(currentProperty);
+                instance.addProperty(currentProperty);
             }
 
             result = instance.getProperties();

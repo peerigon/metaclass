@@ -30,7 +30,7 @@ describe("Interface", function () {
     it("should return true", function () {
         expect(is(instance).instanceOf(Interface)).to.be(true);
     });
-    describe("#setMethod", function () {
+    describe("#addMethod", function () {
         it("should return the instance", function () {
             var instanceMethod = new AbstractMethod(),
                 staticMethod = new AbstractMethod();
@@ -41,50 +41,50 @@ describe("Interface", function () {
             staticMethod
                 .setName("someMethod")     // method with the same name. Should throw no error,
                 .setStatic(true);
-            expect(instance.setMethod(instanceMethod)).to.be(instance);
-            expect(instance.setMethod(staticMethod)).to.be(instance);
+            expect(instance.addMethod(instanceMethod)).to.be(instance);
+            expect(instance.addMethod(staticMethod)).to.be(instance);
         });
         it("should throw an exception", function () {
             expect(function () {
-                instance.setMethod(undefined);
+                instance.addMethod(undefined);
             }).to.throwException(checkError(TypeError));
             expect(function () {
-                instance.setMethod(null);
+                instance.addMethod(null);
             }).to.throwException(checkError(TypeError));
             expect(function () {
-                instance.setMethod(true);
+                instance.addMethod(true);
             }).to.throwException(checkError(TypeError));
             expect(function () {
-                instance.setMethod(1);
+                instance.addMethod(1);
             }).to.throwException(checkError(TypeError));
             expect(function () {
-                instance.setMethod("some string");
+                instance.addMethod("some string");
             }).to.throwException(checkError(TypeError));
             expect(function () {
-                instance.setMethod({});
+                instance.addMethod({});
             }).to.throwException(checkError(TypeError));
             expect(function () {
                 var property = new AbstractProperty();
 
                 property.setName("myProperty");
-                instance.setMethod(property); // no properties
+                instance.addMethod(property); // no properties
             }).to.throwException(checkError(TypeError));
             expect(function () {
                 var property = new Property();
 
                 property.setName("myProperty");
-                instance.setMethod(property); // no properties
+                instance.addMethod(property); // no properties
             }).to.throwException(checkError(TypeError));
             expect(function () {
                 var method = new Method();
 
                 method.setName("myProperty");
-                instance.setMethod(method); // no methods with implementation code
+                instance.addMethod(method); // no methods with implementation code
             }).to.throwException(checkError(TypeError));
             expect(function () {
                 var method = new AbstractMethod();
 
-                instance.setMethod(method); // method without a name
+                instance.addMethod(method); // method without a name
             }).to.throwException(checkError(Error));
         });
     });
@@ -106,9 +106,9 @@ describe("Interface", function () {
         });
         it("should return the method", function () {
             instanceMethod.setName("someMethod");
-            instance.setMethod(instanceMethod);
+            instance.addMethod(instanceMethod);
             staticMethod.setName("someMethod");
-            instance.setMethod(staticMethod);
+            instance.addMethod(staticMethod);
             expect(instance.getMethod("someMethod")).to.be(instanceMethod);
             expect(instance.getMethod("someMethod", false)).to.be(instanceMethod);
             expect(instance.getMethod("someMethod", true)).to.be(staticMethod);
@@ -129,21 +129,21 @@ describe("Interface", function () {
         it("should return undefined", function () {
             expect(instance.removeMethod("someMethod")).to.be(undefined);
             instanceMethod.setName("someMethod");
-            instance.setMethod(instanceMethod);
+            instance.addMethod(instanceMethod);
             expect(instance.removeMethod(instanceMethod)).to.be(undefined);
         });
         it("should actually remove the method", function () {
             instanceMethod.setName("someMethod");
             staticMethod.setName("someMethod");
             instance
-                .setMethod(instanceMethod)
-                .setMethod(staticMethod)
+                .addMethod(instanceMethod)
+                .addMethod(staticMethod)
                 .removeMethod("someMethod");
             expect(instance.getMethod("someMethod", true)).to.be(null);
             expect(instance.getMethod("someMethod", false)).to.be(null);
             instance
-                .setMethod(instanceMethod)
-                .setMethod(staticMethod)
+                .addMethod(instanceMethod)
+                .addMethod(staticMethod)
                 .removeMethod(instanceMethod);
             expect(instance.getMethod("someMethod", true)).to.be(staticMethod);
             expect(instance.getMethod("someMethod", false)).to.be(null);
@@ -177,7 +177,7 @@ describe("Interface", function () {
 
             for (i = 0; i < allPossibleAbstractMethods.length; i++) {
                 currentProperty = allPossibleAbstractMethods[i];
-                instance.setMethod(currentProperty);
+                instance.addMethod(currentProperty);
             }
 
             result = instance.getMethods();

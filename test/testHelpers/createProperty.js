@@ -10,6 +10,13 @@ var AbstractProperty = require("../../lib/AbstractProperty.class"),
  * Returns the property specified by the description. The description should be
  * a string like "instance abstract method public", etc.
  *
+ * Possible description words are:
+ * - abstract (if absent it's implemented)
+ * - attribute (if ommitted it's method)
+ * - static (if ommitted it's instance)
+ * - public (if ommitted it's private)
+ * - protected (if ommitted it's private)
+ *
  * @param {!String} propertyDescription
  * @return {AbstractProperty}
  */

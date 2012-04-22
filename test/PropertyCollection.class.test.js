@@ -3,15 +3,19 @@
 var expect = require("expect.js"),
     is = require("../lib/helpers/is"),
     PropertyCollection = require("../lib/PropertyCollection.class"),
+    PropertyFilter = require("../lib/helpers/PropertyFilter.class"),
     AbstractProperty = require("../lib/AbstractProperty.class"),
     Property = require("../lib/Property.class"),
     Method = require("../lib/Method.class"),
     combineStrings = require("./testHelpers/combineStrings.js"),
     createProperties = require("./testHelpers/createProperties.js"),
-    sortByPropertyName = require("./testHelpers/sortByPropertyName.js");
+    sortByPropertyName = require("./testHelpers/sortByPropertyName.js"),
+    checkError = require("./testHelpers/checkError.js");
 
 describe("PropertyCollection", function () {
     var instance,
+        checkForTypeError = checkError(TypeError),
+        checkForError = checkError(Error),
         possibleModes = [
             ["static", "instance"],
             ["abstract", "implemented"],
@@ -27,6 +31,28 @@ describe("PropertyCollection", function () {
     });
     it("should return true", function () {
         expect(is(instance).instanceOf(PropertyCollection)).to.be(true);
+    });
+    it("should accept a property filter", function () {
+        expect(function () {
+            instance = new PropertyCollection(new PropertyFilter({}));
+        }).to.not.throwException();
+    });
+    it("should throw an exception", function () {
+        expect(function () {
+            new PropertyCollection(true);
+        }).to.throwException(checkForTypeError);
+        expect(function () {
+            new PropertyCollection(1);
+        }).to.throwException(checkForTypeError);
+        expect(function () {
+            new PropertyCollection("some string");
+        }).to.throwException(checkForTypeError);
+        expect(function () {
+            new PropertyCollection({});
+        }).to.throwException(checkForTypeError);
+        expect(function () {
+            new PropertyCollection(function () {});
+        }).to.throwException(checkForTypeError);
     });
     describe("#addProperty", function () {
         it("should return the instance", function () {
@@ -45,25 +71,36 @@ describe("PropertyCollection", function () {
         it("should throw an exception", function () {
             expect(function () {
                 instance.addProperty(undefined);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.addProperty(null);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.addProperty(true);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.addProperty(1);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.addProperty("some string");
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.addProperty({});
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.addProperty(new AbstractProperty()); // property without name
-            }).to.throwException();
+            }).to.throwException(checkForError);
+        });
+        it("should silently not add the property when the property is filtered", function () {
+            var filter = new PropertyFilter({Private: false}),
+                staticProp = new Property();
+
+            staticProp
+                .setName("staticProperty")
+                .setStatic(true);
+            instance = new PropertyCollection(filter);
+            instance.addProperty(staticProp);
+            expect(instance.getProperty("staticProperty", true)).to.be(null);
         });
     });
     describe("#getProperty", function () {
@@ -127,19 +164,19 @@ describe("PropertyCollection", function () {
         it("should throw an exception", function () {
             expect(function () {
                 instance.removeProperty(undefined);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.removeProperty(null);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.removeProperty(true);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.removeProperty(2);
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
             expect(function () {
                 instance.removeProperty({});
-            }).to.throwException();
+            }).to.throwException(checkForTypeError);
         });
     });
     describe("#getProperties", function () {

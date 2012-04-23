@@ -18,37 +18,38 @@ describe("Method", function () {
         expect(is(instance).instanceOf(AbstractMethod)).to.be(true);
         expect(is(instance).instanceOf(AbstractProperty)).to.be(true);
     });
-    describe("#setCode", function () {
+    describe("#setFunction", function () {
         it("should return the instance", function () {
-            expect(instance.setCode("var a = 1;")).to.be(instance);
-            expect(instance.setCode("")).to.be(instance);
-            expect(instance.setCode(null)).to.be(instance);
+            expect(instance.setFunction(function () {})).to.be(instance);
+            expect(instance.setFunction(null)).to.be(instance);
         });
         it("should throw an exception", function () {
             expect(function () {
-                instance.setCode(undefined);
+                instance.setFunction(undefined);
             }).to.throwException();
             expect(function () {
-                instance.setCode(true);
+                instance.setFunction(true);
             }).to.throwException();
             expect(function () {
-                instance.setCode(1);
+                instance.setFunction(1);
             }).to.throwException();
             expect(function () {
-                instance.setCode({});
+                instance.setFunction({});
             }).to.throwException();
         });
     });
-    describe("#getCode", function () {
-        it("should return 'var a = 1;'", function () {
-            instance.setCode("var a = 1;");
-            expect(instance.getCode()).to.be("var a = 1;");
+    describe("#getFunction", function () {
+        it("should return myFunc", function () {
+            function myFunc() {}
+
+            instance.setFunction(myFunc);
+            expect(instance.getFunction()).to.be(myFunc);
         });
         it("should return null", function () {
-            expect(instance.getCode()).to.be(null);
-            instance.setCode("var a = 1;");
-            instance.setCode(null);
-            expect(instance.getCode()).to.be(null);
+            expect(instance.getFunction()).to.be(null);
+            instance.setFunction(function () {});
+            instance.setFunction(null);
+            expect(instance.getFunction()).to.be(null);
         });
     });
     describe("#isAbstract", function () {

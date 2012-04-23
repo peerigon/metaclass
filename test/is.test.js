@@ -397,5 +397,68 @@ describe("is", function () {
                 expect(is(Iterator).nativeConstructor()).to.be(true);
             });
         }
+
+        it("should return false on MyFunc", function () {
+            function MyFunc() {
+                console.log("I'm trying to have native code");
+            }
+
+            expect(is(MyFunc).nativeConstructor()).to.be(false);
+        });
+        it("should return false on MyFunc inheriting from String", function () {
+            function MyFunc() {
+                console.log("I'm trying to have native code");
+            }
+            MyFunc.prototype = String;
+
+            expect(is(MyFunc).nativeConstructor()).to.be(false);
+        });
+    });
+    describe("#notNativeConstructor", function () {
+        it("should return false on Boolean", function () {
+            expect(is(Boolean).notNativeConstructor()).to.be(false);
+        });
+        it("should return false on Number", function () {
+            expect(is(Number).notNativeConstructor()).to.be(false);
+        });
+        it("should return false on String", function () {
+            expect(is(String).notNativeConstructor()).to.be(false);
+        });
+        it("should return false on Function", function () {
+            expect(is(Function).notNativeConstructor()).to.be(false);
+        });
+        it("should return false on Array", function () {
+            expect(is(Array).notNativeConstructor()).to.be(false);
+        });
+        it("should return false on Object", function () {
+            expect(is(Object).notNativeConstructor()).to.be(false);
+        });
+        it("should return false on Date", function () {
+            expect(is(Date).notNativeConstructor()).to.be(false);
+        });
+        it("should return false on RegExp", function () {
+            expect(is(RegExp).notNativeConstructor()).to.be(false);
+        });
+        if (typeof Iterator !== "undefined") {
+            it("should return true on Iterator", function () {
+                expect(is(Iterator).notNativeConstructor()).to.be(false);
+            });
+        }
+
+        it("should return true on MyFunc", function () {
+            function MyFunc() {
+                console.log("I'm trying to have native code");
+            }
+
+            expect(is(MyFunc).notNativeConstructor()).to.be(true);
+        });
+        it("should return true on MyFunc inheriting from String", function () {
+            function MyFunc() {
+                console.log("I'm trying to have native code");
+            }
+            MyFunc.prototype = String;
+
+            expect(is(MyFunc).notNativeConstructor()).to.be(true);
+        });
     });
 });

@@ -32,6 +32,44 @@ describe("is", function () {
             expect(is(null).constructedBy).to.be(null);
         });
     });
+    describe("#existent", function () {
+        it("should return true, when the value is neither null nor undefined", function () {
+            expect(is(false).existent).to.be(true);
+            expect(is(2).existent).to.be(true);
+            expect(is("hello").existent).to.be(true);
+            expect(is([1, 2, 3]).existent).to.be(true);
+            expect(is({one: 1, two: 2, three: 3}).existent).to.be(true);
+            expect(is(
+                function () {
+                }).existent).to.be(true);
+            expect(is(new Date()).existent).to.be(true);
+            expect(is(/hello/gi).existent).to.be(true);
+            expect(is(new Error()).existent).to.be(true);
+        });
+        it("should return false, when the value is either null or undefined", function () {
+            expect(is(null).existent).to.be(false);
+            expect(is(undefined).existent).to.be(false);
+        });
+    });
+    describe("#notExistent", function () {
+        it("should return true, when the value is either null or undefined", function () {
+            expect(is(null).notExistent).to.be(true);
+            expect(is(undefined).notExistent).to.be(true);
+        });
+        it("should return false, when the value is neither null nor undefined", function () {
+            expect(is(false).notExistent).to.be(false);
+            expect(is(2).notExistent).to.be(false);
+            expect(is("hello").notExistent).to.be(false);
+            expect(is([1, 2, 3]).notExistent).to.be(false);
+            expect(is({one: 1, two: 2, three: 3}).notExistent).to.be(false);
+            expect(is(
+                function () {
+                }).notExistent).to.be(false);
+            expect(is(new Date()).notExistent).to.be(false);
+            expect(is(/hello/gi).notExistent).to.be(false);
+            expect(is(new Error()).notExistent).to.be(false);
+        });
+    });
     describe("#instanceOf", function () {
         function A() {}
 
@@ -329,42 +367,32 @@ describe("is", function () {
                 }).to.throwException();
         });
     });
-    describe("#existent", function () {
-        it("should return true, when the value is neither null nor undefined", function () {
-            expect(is(false).existent()).to.be(true);
-            expect(is(2).existent()).to.be(true);
-            expect(is("hello").existent()).to.be(true);
-            expect(is([1, 2, 3]).existent()).to.be(true);
-            expect(is({one: 1, two: 2, three: 3}).existent()).to.be(true);
-            expect(is(
-                function () {
-                }).existent()).to.be(true);
-            expect(is(new Date()).existent()).to.be(true);
-            expect(is(/hello/gi).existent()).to.be(true);
-            expect(is(new Error()).existent()).to.be(true);
+    describe("#nativeConstructor", function () {
+        it("should return true on Boolean", function () {
+            expect(is(Boolean).nativeConstructor()).to.be(true);
         });
-        it("should return false, when the value is either null or undefined", function () {
-            expect(is(null).existent()).to.be(false);
-            expect(is(undefined).existent()).to.be(false);
+        it("should return true on Number", function () {
+            expect(is(Number).nativeConstructor()).to.be(true);
         });
-    });
-    describe("#notExistent", function () {
-        it("should return true, when the value is either null or undefined", function () {
-            expect(is(null).notExistent()).to.be(true);
-            expect(is(undefined).notExistent()).to.be(true);
+        it("should return true on String", function () {
+            expect(is(String).nativeConstructor()).to.be(true);
         });
-        it("should return false, when the value is neither null nor undefined", function () {
-            expect(is(false).notExistent()).to.be(false);
-            expect(is(2).notExistent()).to.be(false);
-            expect(is("hello").notExistent()).to.be(false);
-            expect(is([1, 2, 3]).notExistent()).to.be(false);
-            expect(is({one: 1, two: 2, three: 3}).notExistent()).to.be(false);
-            expect(is(
-                function () {
-                }).notExistent()).to.be(false);
-            expect(is(new Date()).notExistent()).to.be(false);
-            expect(is(/hello/gi).notExistent()).to.be(false);
-            expect(is(new Error()).notExistent()).to.be(false);
+        it("should return true on Array", function () {
+            expect(is(Array).nativeConstructor()).to.be(true);
         });
+        it("should return true on Object", function () {
+            expect(is(Object).nativeConstructor()).to.be(true);
+        });
+        it("should return true on Date", function () {
+            expect(is(Date).nativeConstructor()).to.be(true);
+        });
+        it("should return true on RegExp", function () {
+            expect(is(RegExp).nativeConstructor()).to.be(true);
+        });
+        if (typeof Iterator !== "undefined") {
+            it("should return true on Iterator", function () {
+                expect(is(Iterator).nativeConstructor()).to.be(true);
+            });
+        }
     });
 });

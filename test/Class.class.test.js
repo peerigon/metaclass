@@ -167,8 +167,10 @@ describe("Class", function () {
         });
     });
     describe("#setConstructor", function () {
+        var constructor = new Method();
+
         it("should return the instance", function () {
-            expect(instance.setConstructor(function () {})).to.be(instance);
+            expect(instance.setConstructor(constructor)).to.be(instance);
         });
         it("should throw an exception", function () {
             expect(function () {
@@ -186,18 +188,21 @@ describe("Class", function () {
             expect(function () {
                 instance.setConstructor({});
             }).to.throwException(checkForTypeError);
+            expect(function () {
+                instance.setConstructor(function () {});
+            }).to.throwException(checkForTypeError);
         });
     });
     describe("#getConstructor", function () {
+        var constructor = new Method();
+
         it("should return null", function () {
             expect(instance.getConstructor()).to.be(null);
-            instance.setConstructor(function () {});
+            instance.setConstructor(constructor);
             instance.setConstructor(null);
             expect(instance.getConstructor()).to.be(null);
         });
         it("should return the constructor", function () {
-            function constructor() {}
-
             instance.setConstructor(constructor);
             expect(instance.getConstructor()).to.be(constructor);
         });

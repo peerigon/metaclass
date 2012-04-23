@@ -6,6 +6,32 @@ var expect = require("expect.js"),
         Error];
 
 describe("is", function () {
+    describe("#constructedBy", function () {
+        function A() {}
+
+        function B() {}
+        B.Extends = A;
+
+        it("should be the constructor function when passing a native type", function () {
+            var nativesValues = [true, 2, "Hello", [1, 2, 3], {one: "one", two: "two"},
+                    new Date(), /hello/gi, new Error()];
+
+            nativesValues.forEach(function (value, index) {
+                 expect(is(value).constructedBy).to.be(nativeFunctions[index]);
+            });
+        });
+        it("should be the constructor function when passing a custom type", function () {
+            var a = new A(),
+                b = new B();
+
+            expect(is(a).constructedBy).to.be(A);
+            expect(is(b).constructedBy).to.be(B);
+        });
+        it("should be null when passing null or undefined", function () {
+            expect(is(undefined).constructedBy).to.be(null);
+            expect(is(null).constructedBy).to.be(null);
+        });
+    });
     describe("#instanceOf", function () {
         function A() {}
 

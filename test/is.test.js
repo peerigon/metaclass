@@ -377,6 +377,9 @@ describe("is", function () {
         it("should return true on String", function () {
             expect(is(String).nativeConstructor()).to.be(true);
         });
+        it("should return true on Function", function () {
+            expect(is(Function).nativeConstructor()).to.be(true);
+        });
         it("should return true on Array", function () {
             expect(is(Array).nativeConstructor()).to.be(true);
         });

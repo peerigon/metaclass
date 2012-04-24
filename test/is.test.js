@@ -34,40 +34,40 @@ describe("is", function () {
     });
     describe("#existent", function () {
         it("should return true, when the value is neither null nor undefined", function () {
-            expect(is(false).existent).to.be(true);
-            expect(is(2).existent).to.be(true);
-            expect(is("hello").existent).to.be(true);
-            expect(is([1, 2, 3]).existent).to.be(true);
-            expect(is({one: 1, two: 2, three: 3}).existent).to.be(true);
+            expect(is(false).existent()).to.be(true);
+            expect(is(2).existent()).to.be(true);
+            expect(is("hello").existent()).to.be(true);
+            expect(is([1, 2, 3]).existent()).to.be(true);
+            expect(is({one: 1, two: 2, three: 3}).existent()).to.be(true);
             expect(is(
                 function () {
-                }).existent).to.be(true);
-            expect(is(new Date()).existent).to.be(true);
-            expect(is(/hello/gi).existent).to.be(true);
-            expect(is(new Error()).existent).to.be(true);
+                }).existent()).to.be(true);
+            expect(is(new Date()).existent()).to.be(true);
+            expect(is(/hello/gi).existent()).to.be(true);
+            expect(is(new Error()).existent()).to.be(true);
         });
         it("should return false, when the value is either null or undefined", function () {
-            expect(is(null).existent).to.be(false);
-            expect(is(undefined).existent).to.be(false);
+            expect(is(null).existent()).to.be(false);
+            expect(is(undefined).existent()).to.be(false);
         });
     });
     describe("#notExistent", function () {
         it("should return true, when the value is either null or undefined", function () {
-            expect(is(null).notExistent).to.be(true);
-            expect(is(undefined).notExistent).to.be(true);
+            expect(is(null).notExistent()).to.be(true);
+            expect(is(undefined).notExistent()).to.be(true);
         });
         it("should return false, when the value is neither null nor undefined", function () {
-            expect(is(false).notExistent).to.be(false);
-            expect(is(2).notExistent).to.be(false);
-            expect(is("hello").notExistent).to.be(false);
-            expect(is([1, 2, 3]).notExistent).to.be(false);
-            expect(is({one: 1, two: 2, three: 3}).notExistent).to.be(false);
+            expect(is(false).notExistent()).to.be(false);
+            expect(is(2).notExistent()).to.be(false);
+            expect(is("hello").notExistent()).to.be(false);
+            expect(is([1, 2, 3]).notExistent()).to.be(false);
+            expect(is({one: 1, two: 2, three: 3}).notExistent()).to.be(false);
             expect(is(
                 function () {
-                }).notExistent).to.be(false);
-            expect(is(new Date()).notExistent).to.be(false);
-            expect(is(/hello/gi).notExistent).to.be(false);
-            expect(is(new Error()).notExistent).to.be(false);
+                }).notExistent()).to.be(false);
+            expect(is(new Date()).notExistent()).to.be(false);
+            expect(is(/hello/gi).notExistent()).to.be(false);
+            expect(is(new Error()).notExistent()).to.be(false);
         });
     });
     describe("#instanceOf", function () {
@@ -271,9 +271,9 @@ describe("is", function () {
         var MyInterface = {},
             OtherInterface = {};
 
-        function MyClass() {
-            this.Implements = [MyInterface];
-        }
+        function MyClass() {}
+
+        MyClass.Implements = [MyInterface];
 
         it("should return true when the Implements-array contains the Interface", function () {
             var myClass = new MyClass(),
@@ -321,9 +321,9 @@ describe("is", function () {
         var MyInterface = {},
             OtherInterface = {};
 
-        function MyClass() {
-            this.Implements = [MyInterface];
-        }
+        function MyClass() {}
+
+        MyClass.Implements = [MyInterface];
 
         it("should return true when the Implements-array does not contains the Interface", function () {
             var myClass = new MyClass(),

@@ -8,6 +8,7 @@ var expect = require("expect.js"),
     Method = require("../lib/Method.class"),
     Property = require("../lib/Property.class"),
     Visibility = require("../lib/Visibility.class"),
+    Interface = require("../lib/Interface.class"),
     combineStrings = require("./testHelpers/combineStrings.js"),
     createProperties = require("./testHelpers/createProperties.js"),
     sortByPropertyName = require("./testHelpers/sortByPropertyName.js"),
@@ -205,6 +206,83 @@ describe("Class", function () {
         it("should return the constructor", function () {
             instance.setConstructor(constructor);
             expect(instance.getConstructor()).to.be(constructor);
+        });
+    });
+    describe("#setInterfaces", function () {
+        it("should return the instance", function () {
+            expect(instance.setInterfaces([new Interface()])).to.be(instance);
+        });
+        it("should throw an exception", function () {
+            expect(function () {
+                instance.setInterfaces(undefined);
+            }).to.throwException(checkForTypeError);
+            expect(function () {
+                instance.setInterfaces(true);
+            }).to.throwException(checkForTypeError);
+            expect(function () {
+                instance.setInterfaces(2);
+            }).to.throwException(checkForTypeError);
+            expect(function () {
+                instance.setInterfaces("someString");
+            }).to.throwException(checkForTypeError);
+            expect(function () {
+                instance.setInterfaces({});
+            }).to.throwException(checkForTypeError);
+            expect(function () {
+                instance.setInterfaces(function () {});
+            }).to.throwException(checkForTypeError);
+            expect(function () {
+                instance.setInterfaces([new Interface(), {}]);
+            }).to.throwException(checkForTypeError);
+        });
+    });
+    describe("#getInterfaces", function () {
+        it("should return []", function () {
+            expect(instance.getInterfaces()).to.eql([]);
+        });
+        it("should return the interfaceArr", function () {
+            var interfaceArr = [new Interface()];
+
+            instance.setInterfaces(interfaceArr);
+            expect(instance.getInterfaces()).to.be(interfaceArr);
+        });
+    });
+    describe("#getInheritedInterfaces", function () {
+        var superClass,
+            superSuperClass,
+            interfaceA,
+            interfaceB,
+            interfaceC;
+
+        before(function () {
+            interfaceA = new Interface();
+            interfaceB = new Interface();
+            interfaceC = new Interface();
+            superClass = new Class();
+            superSuperClass = new Class();
+        });
+        it("should return [] when there's no super class", function () {
+            instance.setInterfaces([interfaceA, interfaceB, interfaceC]);
+            expect(instance.getInheritedInterfaces()).to.eql([]);
+        });
+        it("should collect the interface from the super class", function () {
+            superClass.setInterfaces([interfaceB]);
+            instance.setSuperClass(superClass);
+            expect(instance.getInheritedInterfaces()).to.eql([interfaceB]);
+        });
+        it("should exclude interfaces that are already implemented by the current class", function () {
+            superClass.setInterfaces([interfaceB, interfaceA]);
+            instance.setInterfaces([interfaceA]);
+            instance.setSuperClass(superClass);
+            expect(instance.getInheritedInterfaces()).to.eql([interfaceB]);
+        });
+        it("should collect all interfaces from all super classes that are not already implemented by the current class", function () {            superClass.setInterfaces([interfaceB]);
+            instance.setInterfaces([interfaceA]);
+            superClass.setInterfaces([interfaceA, interfaceB]);
+            superSuperClass.setInterfaces([interfaceB, interfaceC]);
+            superClass.setSuperClass(superSuperClass);
+            instance.setSuperClass(superClass);
+            expect(instance.getInheritedInterfaces()).to.eql([interfaceB, interfaceC]);
         });
     });
     describe("#addProperty", function () {

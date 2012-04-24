@@ -14,6 +14,7 @@ var expect = require("expect.js"),
     Visibility = require("../lib/Visibility.class"),
     inherit = require("../lib/helpers/inherit"),
     is = require("../lib/helpers/is"),
+    isEach = require("../lib/helpers/isEach"),
     PropertyFilter = require("../lib/helpers/PropertyFilter.class"),
     index = require("..");
 
@@ -56,6 +57,9 @@ describe("index", function () {
     });
     it("should export helpers.is", function () {
         expect(index.helpers.is).to.be(is);
+    });
+    it("should export helpers.isEach", function () {
+        expect(index.helpers.isEach).to.be(isEach);
     });
     it("should export helpers.PropertyFilter", function () {
         expect(index.helpers.PropertyFilter).to.be(PropertyFilter);

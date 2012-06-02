@@ -2,7 +2,7 @@
 
 var AbstractProperty = require("../../lib/AbstractProperty.class"),
     AbstractMethod = require("../../lib/AbstractMethod.class"),
-    Property = require("../../lib/Property.class"),
+    Attribute = require("../../lib/Attribute.class"),
     Method = require("../../lib/Method.class"),
     Visibility = require("../../lib/Visibility.class");
 
@@ -31,7 +31,7 @@ function createProperty(propertyDescription) {
         }
     } else { // IF TRUE: It's implemented
         if (propertyDescription.match("attribute")) { // IF TRUE: It's an implemented attribute
-            prop = new Property();
+            prop = new Attribute();
         } else { // IF TRUE: It's an implemented method
             prop = new Method();
         }

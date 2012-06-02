@@ -9,7 +9,7 @@ var expect = require("expect.js"),
     Method = require("../lib/Method.class"),
     Package = require("../lib/Package.class"),
     Param = require("../lib/Param.class"),
-    Property = require("../lib/Property.class"),
+    Attribute = require("../lib/Attribute.class"),
     PropertyCollection = require("../lib/PropertyCollection.class"),
     Visibility = require("../lib/Visibility.class"),
     inherit = require("../lib/helpers/inherit"),
@@ -43,8 +43,8 @@ describe("index", function () {
     it("should export Param", function () {
         expect(index.Param).to.be(Param);
     });
-    it("should export Property", function () {
-        expect(index.Property).to.be(Property);
+    it("should export Attribute", function () {
+        expect(index.Attribute).to.be(Attribute);
     });
     it("should export PropertyCollection", function () {
         expect(index.PropertyCollection).to.be(PropertyCollection);

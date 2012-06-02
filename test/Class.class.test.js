@@ -6,7 +6,7 @@ var expect = require("expect.js"),
     AbstractProperty = require("../lib/AbstractProperty.class"),
     PropertyFilter = require("../lib/helpers/PropertyFilter.class"),
     Method = require("../lib/Method.class"),
-    Property = require("../lib/Property.class"),
+    Attribute = require("../lib/Attribute.class"),
     Visibility = require("../lib/Visibility.class"),
     Interface = require("../lib/Interface.class"),
     combineStrings = require("./testHelpers/combineStrings.js"),
@@ -287,8 +287,8 @@ describe("Class", function () {
     });
     describe("#addProperty", function () {
         it("should return the instance", function () {
-            var instanceProp = new Property(),
-                staticProp = new Property();
+            var instanceProp = new Attribute(),
+                staticProp = new Attribute();
 
             instanceProp
                 .setName("someProperty")
@@ -356,8 +356,8 @@ describe("Class", function () {
             expect(instance.removeProperty("someProperty")).to.be(undefined);
         });
         it("should actually remove the property", function () {
-            var instanceProp = new Property(),
-                staticProp = new Property();
+            var instanceProp = new Attribute(),
+                staticProp = new Attribute();
 
             instanceProp
                 .setName("someProperty")
@@ -419,7 +419,7 @@ describe("Class", function () {
         });
         it("should exclude inherited properties", function () {
             var superClass = new Class(),
-                someProperty = new Property();
+                someProperty = new Attribute();
 
             someProperty.setName("someProperty");
             superClass.addProperty(someProperty);
@@ -429,7 +429,7 @@ describe("Class", function () {
     });
     describe("#getInheritedProperties", function () {
         it("should return an empty array on a class with no super class", function () {
-            var someProperty = new Property();
+            var someProperty = new Attribute();
 
             someProperty.setName("someProperty");
             instance.addProperty(someProperty);
@@ -480,8 +480,8 @@ describe("Class", function () {
             expect(result).to.eql(allPossiblePropertiesWithoutPrivate);
         });
         it("should return only non-overridden properties", function () {
-            var originalProperty = new Property(),
-                overridingProperty = new Property(),
+            var originalProperty = new Attribute(),
+                overridingProperty = new Attribute(),
                 originalMethod = new Method(),
                 overridingMethod = new Method(),
                 superClass = new Class(),

@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     is = require("../lib/helpers/is"),
     PropertyFilter = require("../lib/helpers/PropertyFilter.class"),
-    Property = require("../lib/Property.class"),
+    Attribute = require("../lib/Attribute.class"),
     checkError = require("./testHelpers/checkError.js"),
     combineStrings = require("./testHelpers/combineStrings.js"),
     createProperties = require("./testHelpers/createProperties.js"),
@@ -78,7 +78,7 @@ describe("PropertyFilter", function () {
         });
         it("should filter a property that does not contain information about the visibility", function () {
             var instance = new PropertyFilter({}),
-                property = new Property();
+                property = new Attribute();
 
             expect(instance.test(property)).to.be(false);
         });

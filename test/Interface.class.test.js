@@ -5,7 +5,7 @@ var expect = require("expect.js"),
     AbstractMethod = require("../lib/AbstractMethod.class.js"),
     AbstractProperty = require("../lib/AbstractProperty.class.js"),
     Method = require("../lib/Method.class.js"),
-    Property = require("../lib/Property.class.js"),
+    Attribute = require("../lib/Attribute.class.js"),
     Interface = require("../lib/Interface.class.js"),
     combineStrings = require("./testHelpers/combineStrings.js"),
     createProperties = require("./testHelpers/createProperties.js"),
@@ -70,7 +70,7 @@ describe("Interface", function () {
                 instance.addMethod(property); // no properties
             }).to.throwException(checkError(TypeError));
             expect(function () {
-                var property = new Property();
+                var property = new Attribute();
 
                 property.setName("myProperty");
                 instance.addMethod(property); // no properties

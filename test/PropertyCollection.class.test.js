@@ -5,7 +5,7 @@ var expect = require("expect.js"),
     PropertyCollection = require("../lib/PropertyCollection.class"),
     PropertyFilter = require("../lib/helpers/PropertyFilter.class"),
     AbstractProperty = require("../lib/AbstractProperty.class"),
-    Property = require("../lib/Property.class"),
+    Attribute = require("../lib/Attribute.class"),
     Method = require("../lib/Method.class"),
     combineStrings = require("./testHelpers/combineStrings.js"),
     createProperties = require("./testHelpers/createProperties.js"),
@@ -56,8 +56,8 @@ describe("PropertyCollection", function () {
     });
     describe("#addProperty", function () {
         it("should return the instance", function () {
-            var instanceProp = new Property(),
-                staticProp = new Property();
+            var instanceProp = new Attribute(),
+                staticProp = new Attribute();
 
             instanceProp
                 .setName("someProperty")
@@ -93,7 +93,7 @@ describe("PropertyCollection", function () {
         });
         it("should silently not add the property when the property is filtered", function () {
             var filter = new PropertyFilter({Private: false}),
-                staticProp = new Property();
+                staticProp = new Attribute();
 
             staticProp
                 .setName("staticProperty")
@@ -136,8 +136,8 @@ describe("PropertyCollection", function () {
             expect(instance.removeProperty("someProperty")).to.be(undefined);
         });
         it("should actually remove the method", function () {
-            var instanceProp = new Property(),
-                staticProp = new Property();
+            var instanceProp = new Attribute(),
+                staticProp = new Attribute();
 
             instanceProp
                 .setName("someProperty")

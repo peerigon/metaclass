@@ -50,7 +50,8 @@ describe("AbstractProperty", function () {
     });
     describe("#setType", function () {
         it("should return the instance", function () {
-            expect(instance.setType("js.String")).to.be(instance);
+            expect(instance.setType("Array")).to.be(instance);
+            expect(instance.setType(Array)).to.be(instance);
             expect(instance.setType(undefined)).to.be(instance);
             expect(instance.setType(null)).to.be(instance);
         });
@@ -70,9 +71,13 @@ describe("AbstractProperty", function () {
         });
     });
     describe("#getType", function () {
-        it("should return 'js.String'", function () {
-            instance.setType("js.String");
-            expect(instance.getType()).to.be("js.String");
+        it("should return 'Array'", function () {
+            instance.setType("Array");
+            expect(instance.getType()).to.be("Array");
+        });
+        it("should return Array", function () {
+            instance.setType(Array);
+            expect(instance.getType()).to.be(Array);
         });
         it("should return undefined", function () {
             instance.setType(undefined);

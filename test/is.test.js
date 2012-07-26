@@ -101,7 +101,7 @@ describe("is", function () {
                  expect(is(value).instanceOf(nativeFunctions[index])).to.be(true);
             });
         });
-        it("should work when the prototypes are inherting", function () {
+        it("should work when the prototypes are inheriting", function () {
             var c = new C(),
                 cIs = is(c);
 
